@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FlyRank Capstone — Content Opportunity Scoring</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h1>Content Opportunity Scoring — FlyRank Capstone</h1>
+      <p class="meta">Built on the FlyRank ML Internship dataset — <a href="https://flyrank.ai" target="_blank">flyrank.ai</a></p>
+    </header>
+
+    <section>
+      <h2>Abstract</h2>
+      <p>This project tests a simple approach to rank pages that may need a content refresh using observable search-performance signals. A small starter dataset and a compact model are used to generate an evidence-backed ranked queue for review. The primary baseline ranks pages by recent decline in impressions; the model is a single Random Forest trained on a few safe features. Results are reported with precision@100 and top-100 recommended actions. This work is decision support only and does not claim to predict or cause search engine behavior.</p>
+    </section>
+
+    <section>
+      <h2>Introduction / Problem Statement</h2>
+      <p>Content owners benefit from a prioritized list of pages to review. This capstone asks: can available search-performance signals help rank pages that appear to need review or refresh? The goal is a simple, reproducible prioritization to guide human decisions.</p>
+    </section>
+
+    <section>
+      <h2>Data</h2>
+      <p>Analysis uses the anonymized starter CSV included in the repo (data/raw/content_refresh_anonymized.csv). The larger warehouse exists on Hugging Face but is not required for this simple capstone. All identifiers are pseudonymized.</p>
+    </section>
+
+    <section>
+      <h2>Methodology</h2>
+      <p>A baseline ranks pages by recent decline in impressions (last 30d vs previous 30d). A single Random Forest model is trained (group-split by client_id) to predict a proxy label (trend_direction == 'down') using a small set of safe features: impressions, sessions, ctr, avg_position (cleaned), word_count, age, and the computed decline. The model's predicted probability is used as a score.</p>
+    </section>
+
+    <section>
+      <h2>Results</h2>
+      <p>The notebook reports test precision@100 for both baseline and model. Charts below show the precision comparison and model score distribution.</p>
+      <div class="figures">
+        <figure>
+          <img src="../work/outputs/precision_at_k.png" alt="Precision@K"/>
+          <figcaption>Precision@100 (test): model vs baseline</figcaption>
+        </figure>
+        <figure>
+          <img src="../work/outputs/pred_prob_hist.png" alt="Predicted probability distribution"/>
+          <figcaption>Predicted probability distribution (test)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>Ranked Recommendations</h2>
+      <p>The notebook exported a CSV with the top recommendations (work/outputs/capstone_recommendations_top100.csv). Each row includes an anonymized content_id, score, a short reason string, and a recommended action (Refresh, Review, Monitor).</p>
+    </section>
+
+    <section>
+      <h2>Limitations & Honest Framing</h2>
+      <ul>
+        <li>Label is a proxy (trend_direction) derived from the same snapshot; this is a pragmatic choice for a short capstone.</li>
+        <li>Small feature set and simple model — suitable for prioritization, not causal claims.</li>
+        <li>Does not claim to predict or affect Google rankings.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Reproducibility</h2>
+      <p>Notebook: work/notebooks/capstone_search_intelligence.ipynb (executed). Outputs saved under work/outputs/. To reproduce locally: open the notebook and run it. The notebook uses only the starter CSV included in the repo.</p>
+    </section>
+
+    <section>
+      <h2>Acknowledgments & Data Credit</h2>
+      <p>Built on the FlyRank ML Internship dataset. See https://flyrank.ai for project context and https://huggingface.co/datasets/FlyRank/internship-warehouse for the gated warehouse release.</p>
+    </section>
+
+    <footer>
+      <p>Decision support only — not a claim about search engine algorithms.</p>
+    </footer>
+  </main>
+</body>
+</html>
